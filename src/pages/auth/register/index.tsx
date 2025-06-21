@@ -5,8 +5,7 @@ import { Box, Typography, TextField, Button, Paper, Link } from "@mui/material";
 import NextLink from "next/link";
 import { signUpSchema, type signUpValues } from "@/schemas/auth";
 import { ConfirmEmailModal } from "./ConfirmEmailModal";
-
-type ZodTreeFieldError = { errors: string[] };
+import type { ZodTreeFieldError } from "@/types/zod";
 
 export default function SignUpForm() {
   const [generalError, setGeneralError] = useState("");
