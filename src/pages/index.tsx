@@ -2,6 +2,9 @@ import Head from "next/head";
 import Image from "next/image";
 import { Geist, Geist_Mono } from "next/font/google";
 
+import { createClient } from "@/utils/supabase/client";
+import { useEffect } from "react";
+
 const geistSans = Geist({
   variable: "--font-geist-sans",
   subsets: ["latin"],
@@ -13,6 +16,14 @@ const geistMono = Geist_Mono({
 });
 
 export default function Home() {
+  useEffect(() => {
+    const getSession = async () => {
+      const supabase = createClient();
+      const { data, error } = await supabase.auth.getUser();
+      if (!error) console.log(data);
+    };
+    getSession();
+  });
   return (
     <>
       <Head>

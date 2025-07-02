@@ -5,7 +5,7 @@ import { Box, Typography, TextField, Button, Paper, Link } from "@mui/material";
 import NextLink from "next/link";
 import { signUpSchema, type signUpValues } from "@/schemas/auth";
 import { ConfirmEmailModal } from "./ConfirmEmailModal";
-import type { ZodTreeFieldError } from "@/types/zod";
+import { createClient } from "@/utils/supabase/client";
 
 export default function SignUpForm() {
   const [generalError, setGeneralError] = useState("");
@@ -13,7 +13,6 @@ export default function SignUpForm() {
   const {
     control,
     reset,
-    setError,
     formState: { errors, isSubmitting },
     handleSubmit,
   } = useForm<signUpValues>({
@@ -29,33 +28,27 @@ export default function SignUpForm() {
   const onSubmit: SubmitHandler<signUpValues> = async (data) => {
     setGeneralError("");
     const { email, password } = data;
-    const res = await fetch("/api/auth/register", {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
+    const supabase = createClient();
+    const { data: signUpData, error } = await supabase.auth.signUp({
+      email,
+      password,
+      options: {
+        emailRedirectTo: "http://localhost:3000/api/auth/confirm?",
       },
-      body: JSON.stringify({ email, password }),
     });
-    if (!res.ok) {
-      const data = await res.json();
-      // Catching zod related errors
-      if (data.errors?.properties) {
-        Object.entries(data.errors.properties).forEach(([field, value]) => {
-          const v = value as ZodTreeFieldError;
-          if (v.errors.length > 0) {
-            setError(field as keyof signUpValues, {
-              type: "server",
-              message: v.errors[0],
-            });
-          }
-        });
-      } else {
-        setGeneralError(data.error);
-      }
-    } else {
-      setOpen(true);
-      reset();
+
+    if (error) {
+      setGeneralError(error.message);
+      return;
     }
+
+    if (!signUpData.user) {
+      setGeneralError("Signup failed. Please try again.");
+      return;
+    }
+
+    setOpen(true);
+    reset();
   };
 
   return (
