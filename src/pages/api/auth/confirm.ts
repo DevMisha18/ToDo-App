@@ -20,8 +20,6 @@ export default async function handler(
     );
 
     if (!error) {
-      // TODO: store session IN REDUX
-
       // The session data (data.session) will contain the access and refresh tokens.
       // Supabase's SSR client automatically stores these in cookies.
 
@@ -31,7 +29,6 @@ export default async function handler(
       // Redirect user to specified redirect URL or root of app
       return res.redirect(307, "/");
     } else {
-      // Handle the error (e.g., log it, redirect to an error page)
       console.error("Error exchanging code for session:", error);
     }
   }

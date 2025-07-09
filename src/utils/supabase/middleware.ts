@@ -33,7 +33,6 @@ export async function updateSession(request: NextRequest) {
 
   // IMPORTANT: Move the bypass check here, before getUser()
   if (request.nextUrl.pathname.startsWith("/api/auth/confirm")) {
-    console.log("her");
     // If it's the confirm route, let it proceed directly
     // without checking for user session yet, as it's meant to establish it.
     return supabaseResponse;

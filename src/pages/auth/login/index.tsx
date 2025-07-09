@@ -5,8 +5,11 @@ import { signInSchema, type signInValues } from "@/schemas/auth";
 import { Box, Paper, TextField, Button, Typography, Link } from "@mui/material";
 import NextLink from "next/link";
 import { loginUser } from "@/lib/loginUser";
+import { useDispatch } from "react-redux";
+import { setSession } from "@/features/auth/authSlice";
 
 export default function SignInForm() {
+  const dispatch = useDispatch();
   const [generalError, setGeneralError] = useState("");
   const {
     control,
@@ -23,14 +26,14 @@ export default function SignInForm() {
 
   const onSubmit: SubmitHandler<signInValues> = async (data) => {
     setGeneralError("");
-    const { user, session, error } = await loginUser(data);
+    const { session, error } = await loginUser(data);
 
     if (error) {
       setGeneralError(error);
       return;
     }
 
-    // ToDo put user and session in redux toolkit
+    dispatch(setSession(session));
   };
 
   return (
