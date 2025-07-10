@@ -1,7 +1,16 @@
+import React, { useState } from "react";
 import { Box, Typography, Card, IconButton, Checkbox } from "@mui/material";
 import { ModeEdit, Delete } from "@mui/icons-material";
+import { todo } from "@/types/todo";
 
-export function TodoCard() {
+type todoCardProps = Omit<todo, "id" | "user_id">;
+
+export const TodoCard: React.FC<todoCardProps> = ({
+  name,
+  completed,
+  created_at,
+}) => {
+  const [done, setDone] = useState(completed);
   return (
     <Card sx={{ py: 3.5, px: 2 }} elevation={2}>
       <Box
@@ -12,10 +21,15 @@ export function TodoCard() {
         }}
       >
         <Box display="flex">
-          <Checkbox />
+          <Checkbox checked={done} onClick={() => setDone((prev) => !prev)} />
           <Box>
-            <Typography variant="h6">Create react project</Typography>
-            <Typography variant="subtitle2">5:23AM, 01/12/25</Typography>
+            <Typography
+              variant="h6"
+              sx={done ? { textDecoration: "line-through" } : {}}
+            >
+              {name}
+            </Typography>
+            <Typography variant="subtitle2">{created_at}</Typography>
           </Box>
         </Box>
         <Box>
@@ -29,4 +43,4 @@ export function TodoCard() {
       </Box>
     </Card>
   );
-}
+};

@@ -15,14 +15,27 @@ import {
 import { TodoCard } from "@/components/TodoCard";
 import { Header } from "@/components/Header";
 import { createClient } from "@/utils/supabase/client";
+import type { todo } from "@/types/todo";
 
 export default function Home() {
-  const [todos, setTodos] = useState([]);
+  const [todos, setTodos] = useState<todo[]>([]);
   const [time, setTime] = useState("");
   const session = useSelector(selectSession);
-  const supabase = createClient();
+  console.log(session);
 
-  useEffect(() => {}, []);
+  useEffect(() => {
+    const supabase = createClient();
+    const getTodos = async () => {
+      const res = await supabase.from("todos").select("*");
+      if (res.error) {
+        console.log(res.error);
+        return;
+      }
+
+      setTodos(res.data);
+    };
+    getTodos();
+  }, []);
 
   return (
     <>
@@ -77,9 +90,14 @@ export default function Home() {
             gap: 2,
           }}
         >
-          {/* HERE */}
-          <TodoCard />
-          <TodoCard />
+          {todos.map((todo) => (
+            <TodoCard
+              key={todo.id}
+              name={todo.name}
+              created_at={todo.created_at}
+              completed={todo.completed}
+            />
+          ))}
         </Box>
       </Container>
     </>

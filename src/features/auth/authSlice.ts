@@ -3,9 +3,9 @@ import type { PayloadAction } from "@reduxjs/toolkit";
 import type { Session } from "@supabase/supabase-js";
 import type { RootState } from "@/store";
 
-export interface sessionState {
+export type sessionState = {
   session: Session | null;
-}
+};
 
 const initialState: sessionState = {
   session: null,
