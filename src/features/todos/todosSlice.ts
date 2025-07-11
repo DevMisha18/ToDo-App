@@ -6,7 +6,7 @@ export type todoState = Omit<todo, "user_id">;
 
 const initialState: todoState[] = [];
 
-export const todoSlice = createSlice({
+export const todosSlice = createSlice({
   name: "todo",
   initialState,
   reducers: {
@@ -25,7 +25,7 @@ export const todoSlice = createSlice({
   },
 });
 
-export const { addTodo, updateTodo, deleteTodoById } = todoSlice.actions;
+export const { addTodo, updateTodo, deleteTodoById } = todosSlice.actions;
 export const selectAllTodos = (state: RootState) => state.todos;
 export const selectTodoById = (state: RootState, id: string) =>
   state.todos.find((todo) => todo.id === id);
