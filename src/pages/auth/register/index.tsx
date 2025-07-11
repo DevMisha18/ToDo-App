@@ -24,6 +24,8 @@ export default function SignUpForm() {
     },
     mode: "onTouched",
   });
+  const apiBaseUrl = process.env.NEXT_PUBLIC_API_URL!;
+  const confirmUrl = new URL("confirm", apiBaseUrl);
 
   const onSubmit: SubmitHandler<signUpValues> = async (data) => {
     setGeneralError("");
@@ -33,7 +35,7 @@ export default function SignUpForm() {
       email,
       password,
       options: {
-        emailRedirectTo: "http://localhost:3000/api/auth/confirm?",
+        emailRedirectTo: `${confirmUrl.toString()}`,
       },
     });
 
