@@ -2,10 +2,11 @@
 import { createServerClient, type CookieOptions } from "@supabase/ssr";
 import type { NextApiRequest, NextApiResponse } from "next"; // Import NextApiRequest and NextApiResponse
 import { serialize } from "cookie"; // Import serialize and parse from 'cookie'
+import type { Database } from "@/types/database.type";
 
 // This createClient function is now specifically for Pages Router API routes
 export const createClient = (req: NextApiRequest, res: NextApiResponse) => {
-  return createServerClient(
+  return createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
     {
