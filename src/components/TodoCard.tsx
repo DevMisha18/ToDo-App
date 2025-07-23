@@ -1,16 +1,22 @@
 import React, { useState } from "react";
 import { Box, Typography, Card, IconButton, Checkbox } from "@mui/material";
 import { ModeEdit, Delete } from "@mui/icons-material";
+import {
+  useUpdateTodoMutation,
+  useDeleteTodoMutation,
+} from "@/features/todos/todosApi";
 import { todo } from "@/types/todo";
 
-type todoCardProps = Omit<todo, "id" | "user_id">;
-
-export const TodoCard: React.FC<todoCardProps> = ({
+export const TodoCard: React.FC<todo> = ({
+  id,
   name,
   completed,
   created_at,
 }) => {
   const [done, setDone] = useState(completed);
+  // const [updateTodo, result] = useUpdateTodoMutation();
+  const [deleteTodo, result] = useDeleteTodoMutation();
+
   return (
     <Card sx={{ py: 3.5, px: 2 }} elevation={2}>
       <Box
@@ -21,7 +27,11 @@ export const TodoCard: React.FC<todoCardProps> = ({
         }}
       >
         <Box display="flex">
-          <Checkbox checked={done} onClick={() => setDone((prev) => !prev)} />
+          <Checkbox
+            checked={done}
+            onChange={() => setDone((prev) => !prev)}
+            sx={{ marginRight: 1 }}
+          />
           <Box>
             <Typography
               variant="h6"
@@ -36,7 +46,13 @@ export const TodoCard: React.FC<todoCardProps> = ({
           <IconButton>
             <ModeEdit />
           </IconButton>
-          <IconButton>
+          <IconButton
+            onClick={() =>
+              deleteTodo({
+                filters: [{ type: "eq", column: "id", value: id }],
+              })
+            }
+          >
             <Delete />
           </IconButton>
         </Box>

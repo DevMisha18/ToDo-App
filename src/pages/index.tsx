@@ -1,7 +1,5 @@
 import Head from "next/head";
-import { useState, useEffect } from "react";
-import { useSelector } from "react-redux";
-import { selectSession } from "@/features/auth/authSlice";
+import { useState } from "react";
 import {
   Container,
   Box,
@@ -14,28 +12,15 @@ import {
 } from "@mui/material";
 import { TodoCard } from "@/components/TodoCard";
 import { Header } from "@/components/Header";
-import { createClient } from "@/utils/supabase/client";
-import type { todo } from "@/types/todo";
+import { useGetTodosQuery } from "@/features/todos/todosApi";
+import { useThemeContext } from "@/contexts/ThemeContext";
+import { ToastContainer, Bounce } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 export default function Home() {
-  const [todos, setTodos] = useState<todo[]>([]);
+  const { mode } = useThemeContext();
+  const { data: todos, isLoading, error } = useGetTodosQuery();
   const [time, setTime] = useState("");
-  const session = useSelector(selectSession);
-  console.log(session);
-
-  useEffect(() => {
-    const supabase = createClient();
-    const getTodos = async () => {
-      const res = await supabase.from("todos").select("*");
-      if (res.error) {
-        console.log(res.error);
-        return;
-      }
-
-      setTodos(res.data);
-    };
-    getTodos();
-  }, []);
 
   return (
     <>
@@ -90,16 +75,21 @@ export default function Home() {
             gap: 2,
           }}
         >
-          {todos.map((todo) => (
-            <TodoCard
-              key={todo.id}
-              name={todo.name}
-              created_at={todo.created_at}
-              completed={todo.completed}
-            />
-          ))}
+          {isLoading && <Typography>Loading todos...</Typography>}
+          {todos && Array.isArray(todos) && todos.length > 0 ? (
+            todos.map((todo) => <TodoCard key={todo.id} {...todo} />)
+          ) : (
+            <Typography>No todos found.</Typography>
+          )}
         </Box>
       </Container>
+      <ToastContainer
+        position="bottom-right"
+        autoClose={2000}
+        closeOnClick
+        theme={mode}
+        transition={Bounce}
+      />
     </>
   );
 }
