@@ -19,40 +19,44 @@ export type Order<TTableName extends keyof Database["public"]["Tables"]> = {
   ascending: boolean;
 };
 
-type SupabaseArgsSelect<TTableName extends keyof Database["public"]["Tables"]> =
-  {
-    method: "select";
-    table: TTableName;
-    selectColumns?: string | string[];
-    filters?: SupabaseBasicFilter<TTableName>[];
-    orders?: Order<TTableName>[];
-    range?: { from: number; to: number };
-    limit?: number;
-    payload?: never;
-  };
+export type SupabaseArgsSelect<
+  TTableName extends keyof Database["public"]["Tables"]
+> = {
+  method: "select";
+  table: TTableName;
+  selectColumns?: string | string[];
+  filters?: SupabaseBasicFilter<TTableName>[];
+  orders?: Order<TTableName>[];
+  range?: { from: number; to: number };
+  limit?: number;
+  payload?: never;
+};
 
-type SupabaseArgsInsert<TTableName extends keyof Database["public"]["Tables"]> =
-  {
-    method: "insert";
-    table: TTableName;
-    payload: Database["public"]["Tables"][TTableName]["Insert"];
-    filters?: never;
-  };
+export type SupabaseArgsInsert<
+  TTableName extends keyof Database["public"]["Tables"]
+> = {
+  method: "insert";
+  table: TTableName;
+  payload: Database["public"]["Tables"][TTableName]["Insert"];
+  filters?: never;
+};
 
-type SupabaseArgsUpdate<TTableName extends keyof Database["public"]["Tables"]> =
-  {
-    method: "update";
-    table: TTableName;
-    payload: Database["public"]["Tables"][TTableName]["Insert"];
-    filters: SupabaseBasicFilter<TTableName>[];
-  };
+export type SupabaseArgsUpdate<
+  TTableName extends keyof Database["public"]["Tables"]
+> = {
+  method: "update";
+  table: TTableName;
+  payload: Database["public"]["Tables"][TTableName]["Insert"];
+  filters: SupabaseBasicFilter<TTableName>[];
+};
 
-type SupabaseArgsDelete<TTableName extends keyof Database["public"]["Tables"]> =
-  {
-    method: "delete";
-    table: TTableName;
-    filters: SupabaseBasicFilter<TTableName>[];
-  };
+export type SupabaseArgsDelete<
+  TTableName extends keyof Database["public"]["Tables"]
+> = {
+  method: "delete";
+  table: TTableName;
+  filters: SupabaseBasicFilter<TTableName>[];
+};
 
 export type SupabaseArgs<
   TTableName extends keyof Database["public"]["Tables"]
