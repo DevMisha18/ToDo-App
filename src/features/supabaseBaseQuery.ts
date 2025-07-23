@@ -54,22 +54,22 @@ type SupabaseArgsDelete<TTableName extends keyof Database["public"]["Tables"]> =
     filters: SupabaseBasicFilter<TTableName>[];
   };
 
-type SupabaseArgs<TTableName extends keyof Database["public"]["Tables"]> =
+export type SupabaseArgs<
+  TTableName extends keyof Database["public"]["Tables"]
+> =
   | SupabaseArgsSelect<TTableName>
   | SupabaseArgsInsert<TTableName>
   | SupabaseArgsUpdate<TTableName>
   | SupabaseArgsDelete<TTableName>;
 type SupabaseExtraOptions = object;
 
-type SupabaseBaseReturnError = {
+export type SupabaseBaseReturnError = {
   error: {
-    message: string;
-    code: string;
-    details?: string;
-    hint?: string;
+    data: string;
+    status: string;
   };
 };
-type SupabaseBaseReturnData<
+export type SupabaseBaseReturnData<
   TTableName extends keyof Database["public"]["Tables"]
 > = {
   data:
@@ -77,9 +77,9 @@ type SupabaseBaseReturnData<
     | Database["public"]["Tables"][TTableName]["Row"][];
 };
 
-type SupabaseBaseReturnContent<
+export type SupabaseBaseQueryResult<
   TTableName extends keyof Database["public"]["Tables"]
-> = Promise<SupabaseBaseReturnData<TTableName> | SupabaseBaseReturnError>;
+> = SupabaseBaseReturnData<TTableName> | SupabaseBaseReturnError;
 
 const applyFilters = <TTableName extends keyof Database["public"]["Tables"]>(
   queryBuilder: PostgrestFilterBuilder<
@@ -153,7 +153,7 @@ export const supabaseBaseQuery = async <
   args: SupabaseArgs<TTableName>,
   api: BaseQueryApi,
   extraOptions: SupabaseExtraOptions
-): SupabaseBaseReturnContent<TTableName> => {
+): Promise<SupabaseBaseQueryResult<TTableName>> => {
   const supabase = createClient();
   const queryBuilder = supabase.from(args.table);
   const { signal } = api;
@@ -196,11 +196,9 @@ export const supabaseBaseQuery = async <
       case "update":
         if (!args.filters || args.filters.length === 0) {
           return {
-            data: null,
             error: {
-              message:
-                "Update operation requires filters to specify which rows to update.",
-              code: "MISSING_FILTERS",
+              data: "Update operation requires filters to specify which rows to update.",
+              status: "MISSING_FILTERS",
             },
           };
         }
@@ -212,11 +210,9 @@ export const supabaseBaseQuery = async <
       case "delete":
         if (!args.filters || args.filters.length === 0) {
           return {
-            data: null,
             error: {
-              message:
-                "Delete operation requires filters to specify which rows to delete.",
-              code: "MISSING_FILTERS",
+              data: "Delete operation requires filters to specify which rows to delete.",
+              status: "MISSING_FILTERS",
             },
           };
         }
@@ -226,13 +222,23 @@ export const supabaseBaseQuery = async <
         ).select();
         break;
     }
-    const { data, error } = await finalBuilder.abortSignal(signal);
-    return { data, error };
+    const { data, error: supabaseError } = await finalBuilder.abortSignal(
+      signal
+    );
+    if (supabaseError) {
+      return {
+        error: {
+          data: supabaseError.message,
+          status: supabaseError.code,
+        },
+      };
+    }
+    return { data };
   } catch (err: any) {
     return {
       error: {
-        message: err?.message || "An unknown client-side error occurred.",
-        code: "CLIENT_ERROR",
+        data: err?.message || "An unknown client-side error occurred.",
+        status: "CLIENT_ERROR",
       },
     };
   }
