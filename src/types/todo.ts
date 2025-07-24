@@ -9,5 +9,5 @@ export type todo = {
 
 export type CreateTodo = {
   name: string;
-  completed?: boolean;
+  completed: boolean;
 };

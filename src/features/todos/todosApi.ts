@@ -53,6 +53,51 @@ export const todosApi = createApi({
         table: "todos",
         payload: todo,
       }),
+      onQueryStarted: async (
+        args: { todo: CreateTodo },
+        { dispatch, queryFulfilled }
+      ) => {
+        const loadingToastId = toast.loading("Creating your todo");
+        const tempId = Date.now() * -1;
+        const patchedResult = dispatch(
+          todosApi.util.updateQueryData("getTodos", undefined, (draft) => {
+            draft.push({
+              ...args.todo,
+              created_at: new Date().toISOString(),
+              id: tempId,
+              user_id: "",
+            });
+          })
+        );
+        try {
+          const { data: todos } = await queryFulfilled;
+          if (!Array.isArray(todos) || todos.length === 0) {
+            if (patchedResult) {
+              patchedResult.undo();
+            }
+            updateToast(loadingToastId, "error", "Failed to create todo");
+            return;
+          }
+          updateToast(loadingToastId, "success", "Created successfully!");
+          dispatch(
+            todosApi.util.updateQueryData("getTodos", undefined, (draft) => {
+              const index = draft.findIndex((t) => t.id === tempId);
+              if (index !== -1) {
+                draft.splice(index, 1, todos[0]);
+              } else {
+                draft.push(todos[0]);
+              }
+            })
+          );
+        } catch (err) {
+          patchedResult.undo();
+          updateToast(
+            loadingToastId,
+            "error",
+            `Network error: ${err?.message || "Could not reach server."}`
+          );
+        }
+      },
       invalidatesTags: (
         todos: todo[] | undefined,
         error: SupabaseError | undefined,
@@ -78,6 +123,45 @@ export const todosApi = createApi({
         payload: todo,
         filters: filters,
       }),
+      /**
+       * TODO: Again, works only if filtered by id
+       */
+      onQueryStarted: async (
+        args: { todo: CreateTodo; filters: SupabaseBasicFilter<"todos">[] },
+        { dispatch, queryFulfilled }
+      ) => {
+        const loadingToastId = toast.loading("Updating your todo..");
+        const todoIdToUpdate = args.filters.find(
+          (f: SupabaseBasicFilter<"todos">) => f.column === "id"
+        )?.value as number | undefined;
+        const patchedResult = dispatch(
+          todosApi.util.updateQueryData("getTodos", undefined, (draft) => {
+            const index = draft.findIndex((todo) => todo.id === todoIdToUpdate);
+            if (index !== -1) {
+              draft.splice(index, 1, { ...draft[index], ...args.todo });
+            }
+          })
+        );
+
+        try {
+          const { data } = await queryFulfilled;
+          if (!Array.isArray(data) || data.length === 0) {
+            if (patchedResult) {
+              patchedResult.undo();
+            }
+            updateToast(loadingToastId, "error", "Failed to update todo");
+          } else {
+            updateToast(loadingToastId, "success", "Updated sucessfully!");
+          }
+        } catch (err) {
+          patchedResult.undo();
+          updateToast(
+            loadingToastId,
+            "error",
+            `Network error: ${err?.message || "Could not reach server."}`
+          );
+        }
+      },
       invalidatesTags: (
         todos: todo[] | undefined,
         error: SupabaseError | undefined,
@@ -141,15 +225,11 @@ export const todosApi = createApi({
             }
           } catch (err) {
             patchedResult.undo();
-            toast.update(loadingToastId, {
-              render: `Network error: ${
-                err?.message || "Could not reach server."
-              }`,
-              type: "error",
-              isLoading: false,
-              closeOnClick: true,
-              autoClose: 2000,
-            });
+            updateToast(
+              loadingToastId,
+              "error",
+              `Network error: ${err?.message || "Could not reach server."}`
+            );
           }
         }
       },
