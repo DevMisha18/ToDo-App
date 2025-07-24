@@ -5,15 +5,14 @@ import type { CreateTodo } from "@/types/todo";
 import type {
   SupabaseBasicFilter,
   SupabaseArgs,
+  SupabaseBaseReturnError,
 } from "@/features/supabaseBaseQuery";
 import { type Database } from "@/types/database.type";
 import { BaseQueryFn, TagDescription } from "@reduxjs/toolkit/query";
 import { toast } from "react-toastify";
+import { updateToast } from "@/utils/toast/helper";
 
-type SupabaseError = {
-  data: string;
-  status: string;
-};
+type SupabaseError = SupabaseBaseReturnError["error"];
 
 type SupabaseQueryFn<TTableName extends keyof Database["public"]["Tables"]> =
   BaseQueryFn<
@@ -55,7 +54,7 @@ export const todosApi = createApi({
         payload: todo,
       }),
       invalidatesTags: (
-        todo: todo[] | undefined,
+        todos: todo[] | undefined,
         error: SupabaseError | undefined,
         arg: { todo: CreateTodo }
       ) => {
@@ -116,6 +115,10 @@ export const todosApi = createApi({
 
         if (todoIdToDelete !== undefined) {
           const patchedResult = dispatch(
+            /**
+             * params: endpoint's name, endpoint's query args, immer patch func (immer - package)
+             * endpoint's name & args used for identifying which cache to twick
+             */
             todosApi.util.updateQueryData("getTodos", undefined, (draft) => {
               const index = draft.findIndex(
                 (todo) => todo.id === todoIdToDelete
@@ -132,21 +135,9 @@ export const todosApi = createApi({
               if (patchedResult) {
                 patchedResult.undo();
               }
-              toast.update(loadingToastId, {
-                render: "Failed to delete todo",
-                type: "error",
-                isLoading: false,
-                closeOnClick: true,
-                autoClose: 2000,
-              });
+              updateToast(loadingToastId, "error", "Failed to delete todo");
             } else {
-              toast.update(loadingToastId, {
-                render: "Deleted successfully!",
-                type: "success",
-                isLoading: false,
-                closeOnClick: true,
-                autoClose: 2000,
-              });
+              updateToast(loadingToastId, "success", "Deleted successfully");
             }
           } catch (err) {
             patchedResult.undo();
