@@ -1,3 +1,5 @@
+import { Database } from "@/types/database.type";
+
 // id: UUID, created_at: timestamptz, user_id: UUID; From supabase
 export type todo = {
   id: number;
@@ -11,3 +13,8 @@ export type CreateTodo = {
   name: string;
   completed: boolean;
 };
+
+export type UpdateTodo =
+  | { name: string; completed?: boolean }
+  | { name?: string; completed: boolean }
+  | { name: string; completed: boolean };

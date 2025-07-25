@@ -46,7 +46,7 @@ export type SupabaseArgsUpdate<
 > = {
   method: "update";
   table: TTableName;
-  payload: Database["public"]["Tables"][TTableName]["Insert"];
+  payload: Database["public"]["Tables"][TTableName]["Update"];
   filters: SupabaseBasicFilter<TTableName>[];
 };
 

@@ -1,7 +1,7 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { supabaseBaseQuery } from "@/features/supabaseBaseQuery";
 import type { todo } from "@/types/todo";
-import type { CreateTodo } from "@/types/todo";
+import type { CreateTodo, UpdateTodo } from "@/types/todo";
 import type {
   SupabaseBasicFilter,
   SupabaseArgs,
@@ -10,7 +10,7 @@ import type {
 import { type Database } from "@/types/database.type";
 import { BaseQueryFn, TagDescription } from "@reduxjs/toolkit/query";
 import { toast } from "react-toastify";
-import { updateToast } from "@/utils/toast/helper";
+import { updateToast } from "@/utils/toast";
 
 type SupabaseError = SupabaseBaseReturnError["error"];
 
@@ -109,13 +109,13 @@ export const todosApi = createApi({
     }),
     updateTodo: build.mutation<
       todo[],
-      { todo: CreateTodo; filters: SupabaseBasicFilter<"todos">[] }
+      { todo: UpdateTodo; filters: SupabaseBasicFilter<"todos">[] }
     >({
       query: ({
         todo,
         filters,
       }: {
-        todo: CreateTodo;
+        todo: UpdateTodo;
         filters: SupabaseBasicFilter<"todos">[];
       }) => ({
         method: "update",
@@ -127,7 +127,7 @@ export const todosApi = createApi({
        * TODO: Again, works only if filtered by id
        */
       onQueryStarted: async (
-        args: { todo: CreateTodo; filters: SupabaseBasicFilter<"todos">[] },
+        args: { todo: UpdateTodo; filters: SupabaseBasicFilter<"todos">[] },
         { dispatch, queryFulfilled }
       ) => {
         const loadingToastId = toast.loading("Updating your todo..");
@@ -166,7 +166,7 @@ export const todosApi = createApi({
         todos: todo[] | undefined,
         error: SupabaseError | undefined,
         args: {
-          todo: CreateTodo;
+          todo: UpdateTodo;
           filters: SupabaseBasicFilter<"todos">[];
         }
       ) => {
