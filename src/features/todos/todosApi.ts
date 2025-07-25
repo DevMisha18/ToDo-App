@@ -47,7 +47,7 @@ export const todosApi = createApi({
         return tags;
       },
     }),
-    addTodo: build.mutation<todo[], { todo: CreateTodo }>({
+    createTodo: build.mutation<todo[], { todo: CreateTodo }>({
       query: ({ todo }: { todo: CreateTodo }) => ({
         method: "insert",
         table: "todos",
@@ -61,7 +61,7 @@ export const todosApi = createApi({
         const tempId = Date.now() * -1;
         const patchedResult = dispatch(
           todosApi.util.updateQueryData("getTodos", undefined, (draft) => {
-            draft.push({
+            draft.unshift({
               ...args.todo,
               created_at: new Date().toISOString(),
               id: tempId,
@@ -247,7 +247,7 @@ export const todosApi = createApi({
 
 export const {
   useGetTodosQuery,
-  useAddTodoMutation,
+  useCreateTodoMutation,
   useUpdateTodoMutation,
   useDeleteTodoMutation,
 } = todosApi;
