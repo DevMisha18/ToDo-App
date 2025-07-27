@@ -10,8 +10,9 @@ import {
   MenuItem,
   FormControl,
 } from "@mui/material";
-import { TodoCard } from "@/components/TodoCard";
 import { Header } from "@/components/Header";
+import { TodoCard } from "@/components/TodoCard";
+import { CreateTodoForm } from "@/components/CreateTodoForm";
 import { useGetTodosQuery } from "@/features/todos/todosApi";
 import { useThemeContext } from "@/contexts/ThemeContext";
 import { ToastContainer, Bounce } from "react-toastify";
@@ -19,8 +20,9 @@ import "react-toastify/dist/ReactToastify.css";
 
 export default function Home() {
   const { mode } = useThemeContext();
-  const { data: todos, isLoading, error } = useGetTodosQuery();
+  const { data: todos, isLoading } = useGetTodosQuery();
   const [time, setTime] = useState("");
+  const [showCreateTodoForm, setShowCreateTodoForm] = useState(false);
 
   return (
     <>
@@ -31,6 +33,8 @@ export default function Home() {
         <link rel="icon" href="/favicon.ico" />
       </Head>
       <Header />
+      {/* FIX THE BLUR EFFECT */}
+      {/* You have to create div and lay it on top of everything with bg blur */}
       <Container>
         <Typography
           variant="h3"
@@ -51,7 +55,12 @@ export default function Home() {
             padding: 2,
           }}
         >
-          <Button variant="contained" size="large" color="secondary">
+          <Button
+            variant="contained"
+            size="large"
+            color="secondary"
+            onClick={() => setShowCreateTodoForm(true)}
+          >
             Add Task
           </Button>
           <FormControl sx={{ minWidth: 160 }}>
@@ -76,13 +85,31 @@ export default function Home() {
           }}
         >
           {isLoading && <Typography>Loading todos...</Typography>}
-          {todos && Array.isArray(todos) && todos.length > 0 ? (
-            todos.map((todo) => <TodoCard key={todo.id} {...todo} />)
-          ) : (
-            <Typography>No todos found.</Typography>
-          )}
+          {todos && Array.isArray(todos) && todos.length > 0
+            ? todos.map((todo) => <TodoCard key={todo.id} {...todo} />)
+            : !isLoading && <Typography>No todos found.</Typography>}
         </Box>
       </Container>
+      {showCreateTodoForm && (
+        <Box
+          sx={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+            width: "100vw",
+            height: "100vh",
+            backgroundColor: "255,255,255,0.8",
+            backdropFilter: "blur(5px)",
+            zIndex: 1000,
+          }}
+          onClick={() => setShowCreateTodoForm(false)}
+        >
+          <CreateTodoForm {...{ setShowCreateTodoForm }} />
+        </Box>
+      )}
       <ToastContainer
         position="bottom-right"
         autoClose={2000}
