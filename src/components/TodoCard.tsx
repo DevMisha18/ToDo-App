@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo, useRef } from "react";
+import React, { useState, useMemo } from "react";
 import {
   Box,
   Typography,
@@ -45,14 +45,14 @@ export const TodoCard: React.FC<todo> = ({
     [updateTodo, id]
   );
 
-  const firstRender = useRef(true);
-  useEffect(() => {
-    if (firstRender.current) {
-      firstRender.current = false;
-      return;
-    }
-    debouncedUpdateCompleted(checked);
-  }, [debouncedUpdateCompleted, checked]);
+  // const firstRender = useRef(true);
+  // useEffect(() => {
+  //   if (firstRender.current) {
+  //     firstRender.current = false;
+  //     return;
+  //   }
+  //   ;ebouncedUpdateCompleted(checked);
+  // }, [debouncedUpdateCompleted, checked]);
 
   const handleSave = () => {
     const newName = name.trim();
@@ -83,7 +83,10 @@ export const TodoCard: React.FC<todo> = ({
         <Box display="flex">
           <Checkbox
             checked={checked}
-            onChange={() => setChecked((prev) => !prev)}
+            onChange={() => {
+              debouncedUpdateCompleted(!checked);
+              setChecked((prev) => !prev);
+            }}
             sx={{ marginRight: 1 }}
           />
           <Box>
