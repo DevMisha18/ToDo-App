@@ -100,8 +100,8 @@ export const todosApi = createApi({
       },
       invalidatesTags: (
         todos: todo[] | undefined,
-        error: SupabaseError | undefined,
-        arg: { todo: CreateTodo }
+        error: SupabaseError | undefined
+        // arg: { todo: CreateTodo }
       ) => {
         if (error) return [];
         return [{ type: "Todo" as const, id: "LIST" }];
@@ -164,11 +164,11 @@ export const todosApi = createApi({
       },
       invalidatesTags: (
         todos: todo[] | undefined,
-        error: SupabaseError | undefined,
-        args: {
-          todo: UpdateTodo;
-          filters: SupabaseBasicFilter<"todos">[];
-        }
+        error: SupabaseError | undefined
+        // args: {
+        //   todo: UpdateTodo;
+        //   filters: SupabaseBasicFilter<"todos">[];
+        // }
       ) => {
         if (error) return [];
         return todos!.map((todo) => ({ type: "Todo" as const, id: todo.id }));
@@ -235,8 +235,8 @@ export const todosApi = createApi({
       },
       invalidatesTags: (
         todos: todo[] | undefined,
-        error: SupabaseError | undefined,
-        args: { filters: SupabaseBasicFilter<"todos">[] }
+        error: SupabaseError | undefined
+        // args: { filters: SupabaseBasicFilter<"todos">[] }
       ) => {
         if (error) return [];
         return todos!.map((todo) => ({ type: "Todo" as const, id: todo.id }));

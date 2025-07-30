@@ -156,6 +156,7 @@ export const supabaseBaseQuery = async <
 >(
   args: SupabaseArgs<TTableName>,
   api: BaseQueryApi,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   extraOptions: SupabaseExtraOptions
 ): Promise<SupabaseBaseQueryResult<TTableName>> => {
   const supabase = createClient();

@@ -1,5 +1,3 @@
-import { Database } from "@/types/database.type";
-
 // id: UUID, created_at: timestamptz, user_id: UUID; From supabase
 export type todo = {
   id: number;

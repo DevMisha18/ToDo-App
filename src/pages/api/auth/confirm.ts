@@ -15,7 +15,7 @@ export default async function handler(
     const supabase = createClient(req, res);
 
     // Exchange the code for a session (which contains access and refresh tokens)
-    const { data, error } = await supabase.auth.exchangeCodeForSession(
+    const { error } = await supabase.auth.exchangeCodeForSession(
       code as string
     );
 
