@@ -2,7 +2,8 @@
 import { createClient } from "@/utils/supabase/client";
 import type { BaseQueryApi } from "@reduxjs/toolkit/query";
 import type { Database } from "@/types/database.type";
-import type { PostgrestFilterBuilder } from "@supabase/postgrest-js";
+import type { PostgrestFilterBuilder } from "@/types/postgrest-types";
+// import type { PostgrestFilterBuilder } from "@supabase/postgrest-js"
 
 type BasicComparisonOperator = "eq" | "neq" | "gt" | "gte" | "lt" | "lte";
 
@@ -86,20 +87,16 @@ export type SupabaseBaseQueryResult<
 > = SupabaseBaseReturnData<TTableName> | SupabaseBaseReturnError;
 
 const applyFilters = <TTableName extends keyof Database["public"]["Tables"]>(
-  queryBuilder: PostgrestFilterBuilder<
-    Database["public"],
-    Database["public"]["Tables"][TTableName],
-    Database["public"]["Tables"][TTableName]["Row"],
-    Database["public"]["Tables"][TTableName]["Row"][]
-  >,
+  queryBuilder: PostgrestFilterBuilder,
   filters: SupabaseBasicFilter<TTableName>[]
-) => {
+): PostgrestFilterBuilder => {
   let currentBuilder = queryBuilder;
   for (const filter of filters) {
     switch (filter.type) {
       case "eq":
         currentBuilder = currentBuilder.eq(
           filter.column as string,
+          // @ts-expect-error value can be almost anything, not worth strongtyping
           filter.value
         );
         break;
@@ -163,12 +160,7 @@ export const supabaseBaseQuery = async <
   const queryBuilder = supabase.from(args.table);
   const { signal } = api;
 
-  let finalBuilder: PostgrestFilterBuilder<
-    Database["public"],
-    Database["public"]["Tables"][TTableName],
-    Database["public"]["Tables"][TTableName]["Row"],
-    Database["public"]["Tables"][TTableName]["Row"][]
-  >;
+  let finalBuilder: PostgrestFilterBuilder;
 
   try {
     switch (args.method) {
@@ -196,6 +188,7 @@ export const supabaseBaseQuery = async <
         }
         break;
       case "insert":
+        // @ts-expect-error already explaned in earlier code
         finalBuilder = queryBuilder.insert(args.payload).select();
         break;
       case "update":
@@ -207,7 +200,10 @@ export const supabaseBaseQuery = async <
             },
           };
         }
+        // @ts-expect-error already explaned in earlier code
         finalBuilder = applyFilters(
+          // @ts-expect-error: Type mismatch due to PostgrestFilterBuilder identity
+          // conflict — see notes in types/postgrest-types.ts
           queryBuilder.update(args.payload),
           args.filters
         ).select();
@@ -221,7 +217,10 @@ export const supabaseBaseQuery = async <
             },
           };
         }
+        // @ts-expect-error already explaned in earlier code
         finalBuilder = applyFilters(
+          // @ts-expect-error: Same as above — delete() call triggers
+          // a type incompatibility with inferred builder type
           queryBuilder.delete(),
           args.filters
         ).select();
