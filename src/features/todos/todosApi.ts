@@ -91,10 +91,12 @@ export const todosApi = createApi({
           );
         } catch (err) {
           patchedResult.undo();
+          const errorMessage =
+            err instanceof Error ? err.message : "Could not reach server.";
           updateToast(
             loadingToastId,
             "error",
-            `Network error: ${err?.message || "Could not reach server."}`
+            `Network error: ${errorMessage}`
           );
         }
       },
@@ -155,10 +157,12 @@ export const todosApi = createApi({
           }
         } catch (err) {
           patchedResult.undo();
+          const errorMessage =
+            err instanceof Error ? err.message : "Could not reach server.";
           updateToast(
             loadingToastId,
             "error",
-            `Network error: ${err?.message || "Could not reach server."}`
+            `Network error: ${errorMessage}`
           );
         }
       },
@@ -225,10 +229,12 @@ export const todosApi = createApi({
             }
           } catch (err) {
             patchedResult.undo();
+            const errorMessage =
+              err instanceof Error ? err.message : "Could not reach server.";
             updateToast(
               loadingToastId,
               "error",
-              `Network error: ${err?.message || "Could not reach server."}`
+              `Network error: ${errorMessage}`
             );
           }
         }
