@@ -1,10 +1,10 @@
 import { useState } from "react";
 import { useForm, Controller, type SubmitHandler } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signInSchema, type signInValues } from "@/schemas/auth";
+import { signInSchema, type signInValues } from "@/shared/schemas/auth";
 import { Box, Paper, TextField, Button, Typography, Link } from "@mui/material";
 import NextLink from "next/link";
-import { loginUser } from "@/lib/loginUser";
+import { loginUser } from "@/shared/lib/loginUser";
 import { useDispatch } from "react-redux";
 import { setSession } from "@/features/auth/authSlice";
 

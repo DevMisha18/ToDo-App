@@ -1,4 +1,4 @@
-import { createClient } from "@/utils/supabase/client";
+import { createClient } from "@/shared/utils/supabase/client";
 import type { Session, User } from "@supabase/supabase-js";
 
 export type loginResult = {
