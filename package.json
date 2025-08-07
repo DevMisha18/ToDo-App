@@ -15,7 +15,6 @@
     "@mui/icons-material": "^7.2.0",
     "@mui/material": "^7.1.1",
     "@reduxjs/toolkit": "^2.8.2",
-    "@supabase/postgrest-js": "1.19.4",
     "@supabase/ssr": "^0.6.1",
     "@supabase/supabase-js": "^2.50.0",
     "cookie": "^1.0.2",

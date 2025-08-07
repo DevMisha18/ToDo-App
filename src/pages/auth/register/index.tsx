@@ -4,7 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { Box, Typography, TextField, Button, Paper, Link } from "@mui/material";
 import NextLink from "next/link";
 import { signUpSchema, type signUpValues } from "@/schemas/auth";
-import { ConfirmEmailModal } from "./ConfirmEmailModal";
+import { ConfirmEmailModal } from "../../../components/ConfirmEmailModal";
 import { createClient } from "@/utils/supabase/client";
 
 export default function SignUpForm() {
