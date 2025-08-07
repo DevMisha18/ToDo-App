@@ -1,8 +1,8 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import { createClient } from "@/utils/supabase/client";
+import { createClient } from "@/shared/utils/supabase/client";
 import type { BaseQueryApi } from "@reduxjs/toolkit/query";
-import type { Database } from "@/types/database.type";
-import type { PostgrestFilterBuilder } from "@/types/postgrest-types";
+import type { Database } from "@/shared/types/database.type";
+import type { PostgrestFilterBuilder } from "@/shared/types/postgrest-types";
 // import type { PostgrestFilterBuilder } from "@supabase/postgrest-js"
 
 type BasicComparisonOperator = "eq" | "neq" | "gt" | "gte" | "lt" | "lte";

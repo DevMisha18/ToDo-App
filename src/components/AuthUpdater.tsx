@@ -1,6 +1,6 @@
 import { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { createClient } from "@/utils/supabase/client";
+import { createClient } from "@/shared/utils/supabase/client";
 import { setSession } from "@/features/auth/authSlice";
 
 export function AuthUpdater() {

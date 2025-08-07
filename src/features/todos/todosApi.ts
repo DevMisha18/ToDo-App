@@ -1,16 +1,16 @@
 import { createApi } from "@reduxjs/toolkit/query/react";
 import { supabaseBaseQuery } from "@/features/supabaseBaseQuery";
-import type { todo } from "@/types/todo";
-import type { CreateTodo, UpdateTodo } from "@/types/todo";
+import type { todo } from "@/shared/types/todo";
+import type { CreateTodo, UpdateTodo } from "@/shared/types/todo";
 import type {
   SupabaseBasicFilter,
   SupabaseArgs,
   SupabaseBaseReturnError,
 } from "@/features/supabaseBaseQuery";
-import { type Database } from "@/types/database.type";
+import { type Database } from "@/shared/types/database.type";
 import { BaseQueryFn, TagDescription } from "@reduxjs/toolkit/query";
 import { toast } from "react-toastify";
-import { updateToast } from "@/utils/toast";
+import { updateToast } from "@/shared/utils/toastUtils";
 
 type SupabaseError = SupabaseBaseReturnError["error"];
 

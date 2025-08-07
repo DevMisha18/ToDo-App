@@ -12,9 +12,9 @@ import {
   useUpdateTodoMutation,
   useDeleteTodoMutation,
 } from "@/features/todos/todosApi";
-import { formatUtcToLocalTime } from "@/utils/time";
-import type { todo } from "@/types/todo";
-import { debounce } from "@/utils/debounce";
+import { formatUtcToLocalTime } from "@/shared/utils/dataUtils";
+import type { todo } from "@/shared/types/todo";
+import { debounce } from "@/shared/utils/debounce";
 
 /**
  * TODO:
