@@ -1,5 +1,6 @@
 /**
- * @
+ * @param {Function} func - your function
+ * @param {Number} delay - delay in ms
  */
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const debounce = <T extends (...args: any[]) => any>(
