@@ -8,7 +8,9 @@
  * Example: "2025-07-24T21:26:21.000Z"
  * @returns A string representing the date and time in the user's local format.
  */
-export function formatUtcToLocalTime(utcDateString: string): string {
+export function formatUtcToLocalTime(
+  utcDateString: string | number | Date
+): string {
   const date = new Date(utcDateString);
 
   const options: Intl.DateTimeFormatOptions = {
