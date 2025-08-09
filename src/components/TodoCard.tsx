@@ -45,15 +45,6 @@ export const TodoCard: React.FC<todo> = ({
     [updateTodo, id]
   );
 
-  // const firstRender = useRef(true);
-  // useEffect(() => {
-  //   if (firstRender.current) {
-  //     firstRender.current = false;
-  //     return;
-  //   }
-  //   ;ebouncedUpdateCompleted(checked);
-  // }, [debouncedUpdateCompleted, checked]);
-
   const handleSave = () => {
     const newName = name.trim();
     setIsEditing(false);
