@@ -18,7 +18,7 @@ import { debounce } from "@/shared/utils/debounce";
 
 /**
  * TODO:
- * 1. ON ESCAPE PRESSED must cancle saving!
+ * 1. ON ESCAPE PRESSED must cancel saving!
  * 2. When debouncing check, if it didn't change, don't send the request
  */
 
