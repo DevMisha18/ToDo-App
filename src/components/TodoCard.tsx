@@ -90,7 +90,7 @@ export const TodoCard: React.FC<todo> = ({
                 onBlur={handleSave}
                 onKeyDown={(e) => {
                   if (e.key === "Escape") {
-                    console.log("Escape pressed!");
+                    e.preventDefault();
                     handleCancel();
                   } else if (e.key === "Enter") {
                     e.preventDefault();
@@ -123,16 +123,20 @@ export const TodoCard: React.FC<todo> = ({
         </Box>
         <Box>
           <IconButton
+            aria-label="edit"
             /**
              * IMPORTANT prevents input blur, stoping race condition between
              * onBlue and onClick
              */
             onMouseDown={(e) => e.preventDefault()}
-            onClick={() => setIsEditing(true)}
+            onClick={() => {
+              setIsEditing(true);
+            }}
           >
             <ModeEdit />
           </IconButton>
           <IconButton
+            aria-label="delete"
             onClick={() =>
               deleteTodo({
                 filters: [{ type: "eq", column: "id", value: id }],
