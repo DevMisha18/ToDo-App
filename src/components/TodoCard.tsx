@@ -18,7 +18,7 @@ import { debounce } from "@/shared/utils/debounce";
 
 /**
  * TODO:
- * 1. ON ESCAPE PRESSED must cancle saving!
+ * 1. ON ESCAPE PRESSED must cancel saving!
  * 2. When debouncing check, if it didn't change, don't send the request
  */
 
@@ -44,15 +44,6 @@ export const TodoCard: React.FC<todo> = ({
       }, 300),
     [updateTodo, id]
   );
-
-  // const firstRender = useRef(true);
-  // useEffect(() => {
-  //   if (firstRender.current) {
-  //     firstRender.current = false;
-  //     return;
-  //   }
-  //   ;ebouncedUpdateCompleted(checked);
-  // }, [debouncedUpdateCompleted, checked]);
 
   const handleSave = () => {
     const newName = name.trim();
@@ -99,7 +90,7 @@ export const TodoCard: React.FC<todo> = ({
                 onBlur={handleSave}
                 onKeyDown={(e) => {
                   if (e.key === "Escape") {
-                    console.log("Escape pressed!");
+                    e.preventDefault();
                     handleCancel();
                   } else if (e.key === "Enter") {
                     e.preventDefault();
@@ -132,16 +123,20 @@ export const TodoCard: React.FC<todo> = ({
         </Box>
         <Box>
           <IconButton
+            aria-label="edit"
             /**
              * IMPORTANT prevents input blur, stoping race condition between
              * onBlue and onClick
              */
             onMouseDown={(e) => e.preventDefault()}
-            onClick={() => setIsEditing(true)}
+            onClick={() => {
+              setIsEditing(true);
+            }}
           >
             <ModeEdit />
           </IconButton>
           <IconButton
+            aria-label="delete"
             onClick={() =>
               deleteTodo({
                 filters: [{ type: "eq", column: "id", value: id }],

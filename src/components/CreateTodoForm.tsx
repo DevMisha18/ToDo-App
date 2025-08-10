@@ -9,6 +9,7 @@ import useMediaQuery from "@mui/material/useMediaQuery";
 const FormSchema = z.object({
   name: z
     .string()
+    .trim()
     .min(1, "Name is required")
     .max(50, "Must be 50 or less characters"),
 });

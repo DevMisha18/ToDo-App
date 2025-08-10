@@ -1,13 +1,17 @@
-import { createDefaultPreset } from "ts-jest";
-
-const tsJestTransformCfg = createDefaultPreset().transform;
-
-/** @type {import('jest').Config} */
-const config = {
+/** @type {import("jest").Config} **/
+module.exports = {
   testEnvironment: "jsdom",
   transform: {
-    ...tsJestTransformCfg,
+    "^.+\\.(ts|tsx|js|jsx)$": [
+      "ts-jest",
+      {
+        tsconfig: "tsconfig.test.json",
+      },
+    ],
+  },
+  moduleNameMapper: {
+    "^@/(.*)$": "<rootDir>/src/$1",
+    // This is needed for Next.js specific modules
+    "\\.(css|less|scss|sass)$": "identity-obj-proxy",
   },
 };
-
-export default config;
